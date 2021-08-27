@@ -20,7 +20,7 @@ function getBoard() {
 
 ( async () => {
 
-    console.log( await getBoard());
+    //console.log( await getBoard());
 
 })();
 
