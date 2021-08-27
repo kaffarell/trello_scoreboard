@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "start": "node src/main.js"
+    "start": "node src/main.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,7 @@
     "axios": "^0.21.1",
     "dotenv": "^10.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jest": "^27.1.0"
+  }
 }
