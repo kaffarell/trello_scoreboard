@@ -1,0 +1,25 @@
+{
+  "name": "trello_scoreboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaffarell/trello_scoreboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaffarell/trello_scoreboard/issues"
+  },
+  "homepage": "https://github.com/kaffarell/trello_scoreboard#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {}
+}
