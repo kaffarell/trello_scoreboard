@@ -21,8 +21,5 @@
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0"
-  },
-  "devDependencies": {
-    "jest": "^27.1.0"
   }
 }
