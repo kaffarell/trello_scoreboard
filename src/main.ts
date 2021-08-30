@@ -132,7 +132,9 @@ function output(memberId: number): any {
     let resultString: string = '';
     Promise.all(promiseArray)
         .then( async (info) => {
-            resultString = (info.sort((a: any , b: any): number => +!(a[1] > b[1]))).toString();
+            resultString = (info.sort((a: any , b: any): number => +!(a[1] > b[1]))).join('\n').toString();
+            // Make string more readable
+            resultString = resultString.replace(/\,/g, ' ');
             console.log(resultString);
             await updateCard(cardId, resultString);
         });
