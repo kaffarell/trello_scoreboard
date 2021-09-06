@@ -5,7 +5,7 @@ dotenv.config();
 
 
 
-// 4BT board id:
+// Trello board id
 let boardId = '5f622509e65281827b2e2e59'
 
 function getBoard(): any {
@@ -121,7 +121,7 @@ function output(memberId: number): any {
     // List all cards for the list
     //console.log(await getCardsOnList(listId));
 
-    // Trello punkte card id
+    // Trello card id where the result should be written
     let cardId = '612bf2f72bddfb5b332069ab';
 
     let promiseArray = [];

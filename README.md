@@ -1,6 +1,6 @@
 # Trello Scoreboard
 
-Searches for all the cards a user is added on and counts them.
+Searches for all the cards a user is added on and counts them. The program outputs the list with all the users and their score in the command line and writes the list on a trello card
 
 ## How to use
 
