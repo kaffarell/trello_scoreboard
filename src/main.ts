@@ -12,7 +12,7 @@ function getBoard(): any {
     return new Promise((resolve, reject) => {
         axios.get(`https://api.trello.com/1/members/me/boards?key=${process.env.key}&token=${process.env.token}`)
             .then((response: any) => {
-                let board = response.data.find((object: any) => object.name === '4BT');
+                let board = response.data.find((object: any) => object.name === '5BT');
                 resolve(board);
             })
             .catch((error: string) => {
@@ -132,7 +132,15 @@ function output(memberId: number): any {
     let resultString: string = '';
     Promise.all(promiseArray)
         .then( async (info) => {
-            resultString = (info.sort((a: any , b: any): number => +!(a[1] > b[1]))).join('\n').toString();
+            resultString = (
+                // The User with the most cards is on the top
+                info.sort((a: any , b: any): number => {
+                    if(a[1] > b[1])
+                        return -1
+                    if(a[1] < b[1])
+                        return 1
+                    return 0
+                })).join('\n').toString();
             // Make string more readable
             resultString = resultString.replace(/\,/g, ' ');
             console.log(resultString);
