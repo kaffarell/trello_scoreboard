@@ -12,7 +12,7 @@ TOKEN=1a9daa509b779crcdv01a13ae55ee00780760cf069114122cab378317a
 KEY=6af36asfcaaebe6fd2d9a880ee8
 ```
 
-Compile the ts to js:
+Compile the typescript to javascript:
 ```
 npm run build:dev
 ```
