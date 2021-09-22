@@ -25,13 +25,10 @@ app.get('/get', async (req, res) => {
 app.get('/test', async (req, res) => {
     let membersObjects: any[] = await getMembers();
     let members: number[] =  membersObjects.map((obj) => obj.idMember);
-    console.log(members)
     let selectedMembers = [];
     // Group members into arrays of 10
-    console.log(members.length);
     let buf = []; 
     let step = 10;
-    console.log(step);
     for (let i = 0; i < members.length; i++) {
         buf.push(members[i]);
         if (buf.length === step) {
@@ -42,18 +39,18 @@ app.get('/test', async (req, res) => {
     if (buf.length > 0) {
         selectedMembers.push([...buf]);
     }
-    console.log(selectedMembers);
     console.log(selectedMembers.length);
 
-    /*
-    let info: any[] = await getMemberInfoBatch(selectedMembers);
-    let fullNames: string[] = [];
-    for(let i = 0; i < info.length; i++) {
-        console.log(info[i]['200'].fullName)
-        fullNames.push(info[i]['200'].fullName);
+    let fullNamesArray: string[] = [];
+    for(let i = 0; i < selectedMembers.length; i++) {
+        let info: any[] = await getMemberInfoBatch(selectedMembers[i]);
+        for(let i = 0; i < info.length; i++) {
+            fullNamesArray.push(info[i]['200'].fullName);
+        }
     }
-    res.end(JSON.stringify(fullNames));
-    */
+    // Two dimensional list with id and fullname
+    console.log([members, fullNamesArray]);
+    res.end(JSON.stringify(fullNamesArray));
 });
 
 app.listen(port, () => {
@@ -124,10 +121,8 @@ function getMemberInfoBatch(memberId: number[]): any {
                 urls = urls + ','
             }
         }
-        console.log(urls);
         axios.get(`https://api.trello.com/1/batch?urls=${urls}&key=${process.env.key}&token=${process.env.token}`)
             .then((response: any) => {
-                console.log(response.data);
                 resolve(response.data);
             })
             .catch((error: string) => {
