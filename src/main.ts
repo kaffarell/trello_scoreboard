@@ -17,6 +17,7 @@ app.get('/get', async (req, res) => {
     let resultString = list.join('\n').toString();
     resultString = resultString.replace(/\,/g, ' ');
     await updateCard(cardId, resultString);
+    console.log(resultString);
     res.end(JSON.stringify(list));
 })
 
@@ -25,9 +26,9 @@ app.listen(port, () => {
 });
 
 
-
 // Trello board id
 let boardId = '5f622509e65281827b2e2e59'
+
 
 function getBoard(): any {
     return new Promise((resolve, reject) => {
