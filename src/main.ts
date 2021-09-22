@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 import express from 'express';
+import { format } from 'path/posix';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,7 +20,41 @@ app.get('/get', async (req, res) => {
     await updateCard(cardId, resultString);
     console.log(resultString);
     res.end(JSON.stringify(list));
-})
+});
+
+app.get('/test', async (req, res) => {
+    let membersObjects: any[] = await getMembers();
+    let members: number[] =  membersObjects.map((obj) => obj.idMember);
+    console.log(members)
+    let selectedMembers = [];
+    // Group members into arrays of 10
+    console.log(members.length);
+    let buf = []; 
+    let step = 10;
+    console.log(step);
+    for (let i = 0; i < members.length; i++) {
+        buf.push(members[i]);
+        if (buf.length === step) {
+            selectedMembers.push([...buf]);
+            buf = [];
+        }
+    }
+    if (buf.length > 0) {
+        selectedMembers.push([...buf]);
+    }
+    console.log(selectedMembers);
+    console.log(selectedMembers.length);
+
+    /*
+    let info: any[] = await getMemberInfoBatch(selectedMembers);
+    let fullNames: string[] = [];
+    for(let i = 0; i < info.length; i++) {
+        console.log(info[i]['200'].fullName)
+        fullNames.push(info[i]['200'].fullName);
+    }
+    res.end(JSON.stringify(fullNames));
+    */
+});
 
 app.listen(port, () => {
     console.log('Listening on port: ' + port);
@@ -79,6 +114,28 @@ function getMemberInfo(memberId: number): any {
     });
 }
 
+function getMemberInfoBatch(memberId: number[]): any {
+    return new Promise((resolve, reject) => {
+        let urls = '';
+        // Create request urls for every supplied memberId
+        for(let i = 0; i < memberId.length; i++) {
+            urls = urls + `/members/${memberId[i]}`;
+            if(i !== memberId.length-1) {
+                urls = urls + ','
+            }
+        }
+        console.log(urls);
+        axios.get(`https://api.trello.com/1/batch?urls=${urls}&key=${process.env.key}&token=${process.env.token}`)
+            .then((response: any) => {
+                console.log(response.data);
+                resolve(response.data);
+            })
+            .catch((error: string) => {
+                reject(error);
+            });
+    });
+}
+
 function getListsOnBoard(boardId: number): any {
     return new Promise((resolve, reject) => {
         axios.get(`https://api.trello.com/1/boards/${boardId}/lists?key=${process.env.key}&token=${process.env.token}`)
@@ -88,8 +145,8 @@ function getListsOnBoard(boardId: number): any {
             .catch((error: string) => {
                 console.log(error);
                 reject(error);
-            })
-    })
+            });
+    });
 }
 
 function getCardsOnList(listId: string): any {
@@ -101,8 +158,8 @@ function getCardsOnList(listId: string): any {
             .catch((error: string) => {
                 console.log(error);
                 reject(error);
-            })
-    })
+            });
+    });
 }
 
 function updateCard(cardId: string, description: string): any {
@@ -114,8 +171,8 @@ function updateCard(cardId: string, description: string): any {
             .catch((error: string) => {
                 console.log(error);
                 reject(error);
-            })
-    })
+            });
+    });
 }
 
 function output(memberId: number): any {
@@ -126,6 +183,7 @@ function output(memberId: number): any {
         resolve([name, cards.length]);
     });
 }
+
 
 
 async function getList(): Promise<string[]> {
@@ -160,9 +218,6 @@ async function getList(): Promise<string[]> {
                     }));
                 resolve(resultString);
             });
-
-    })
+    });
 
 }
-
-module.exports = getBoard;
