@@ -1,7 +1,28 @@
 import axios from 'axios';
 import * as dotenv from 'dotenv';
+import express from 'express';
+
+const app = express();
+const port = process.env.PORT || 3000;
 
 dotenv.config();
+
+app.use(express.static('public'));
+
+app.get('/get', async (req, res) => {
+    // Trello card id where the result should be written
+    let cardId = '612bf2f72bddfb5b332069ab';
+
+    let list = await getList();
+    let resultString = list.join('\n').toString();
+    resultString = resultString.replace(/\,/g, ' ');
+    await updateCard(cardId, resultString);
+    res.end(JSON.stringify(list));
+})
+
+app.listen(port, () => {
+    console.log('Listening on port: ' + port);
+});
 
 
 
@@ -106,47 +127,41 @@ function output(memberId: number): any {
 }
 
 
+async function getList(): Promise<string[]> {
+    return new Promise<string[]>(async (resolve, reject) => {
+        let members: any[] = await getMembers();
 
+        // Print all lists with ids
+        //let boardId = (await getBoard()).id;
+        //console.log(await getListsOnBoard(boardId));
 
-( async () => {
+        // List id for the last list (info list)
+        //let listId = '5f62492f4609835edf8246a0';
+        // List all cards for the list
+        //console.log(await getCardsOnList(listId));
 
-    let members: any[] = await getMembers();
+        let promiseArray = [];
+        for(let i = 0; i < members.length; i++) {
+            promiseArray.push(output(members[i].idMember));
+        }
 
-    // Print all lists with ids
-    //let boardId = (await getBoard()).id;
-    //console.log(await getListsOnBoard(boardId));
+        let resultString: string[];
+        Promise.all(promiseArray)
+            .then( async (info) => {
+                resultString = (
+                    // The User with the most cards is on the top
+                    info.sort((a: any , b: any): number => {
+                        if(a[1] > b[1])
+                            return -1
+                        if(a[1] < b[1])
+                            return 1
+                        return 0
+                    }));
+                resolve(resultString);
+            });
 
-    // List id for the last list (info list)
-    //let listId = '5f62492f4609835edf8246a0';
-    // List all cards for the list
-    //console.log(await getCardsOnList(listId));
+    })
 
-    // Trello card id where the result should be written
-    let cardId = '612bf2f72bddfb5b332069ab';
-
-    let promiseArray = [];
-    for(let i = 0; i < members.length; i++) {
-        promiseArray.push(output(members[i].idMember));
-    }
-
-    let resultString: string = '';
-    Promise.all(promiseArray)
-        .then( async (info) => {
-            resultString = (
-                // The User with the most cards is on the top
-                info.sort((a: any , b: any): number => {
-                    if(a[1] > b[1])
-                        return -1
-                    if(a[1] < b[1])
-                        return 1
-                    return 0
-                })).join('\n').toString();
-            // Make string more readable
-            resultString = resultString.replace(/\,/g, ' ');
-            console.log(resultString);
-            await updateCard(cardId, resultString);
-        });
-
-})();
+}
 
 module.exports = getBoard;
