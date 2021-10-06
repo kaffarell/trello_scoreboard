@@ -1,1 +1,1 @@
-web: node dist/main.js
+web: pwd && ls && node dist/main.js
