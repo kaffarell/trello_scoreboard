@@ -1,1 +1,1 @@
-web: pwd && ls && node dist/main.js
+web: npm run build:prod && node dist/main.js
