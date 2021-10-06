@@ -1,7 +1,7 @@
 const DotenvWebpackPlugin = require('dotenv-webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const { webpack } = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     devtool: 'inline-cheap-source-map',
