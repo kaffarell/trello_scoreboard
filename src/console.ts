@@ -1,65 +1,10 @@
 import axios from 'axios';
 import * as dotenv from 'dotenv';
-import express from 'express';
-
-const app = express();
-const port = process.env.PORT || 3000;
 
 dotenv.config();
 
-app.use(express.static('public'));
-
-app.get('/get', async (req, res) => {
-    // Trello card id where the result should be written
-    let cardId = '612bf2f72bddfb5b332069ab';
-
-    let list = await getList();
-    let resultString = list.join('\n').toString();
-    resultString = resultString.replace(/\,/g, ' ');
-    await updateCard(cardId, resultString);
-    console.log(resultString);
-    res.end(JSON.stringify(list));
-});
-
-app.get('/test', async (req, res) => {
-    let membersObjects: any[] = await getMembers();
-    let members: number[] =  membersObjects.map((obj) => obj.idMember);
-    let selectedMembers = [];
-    // Group members into arrays of 10
-    let buf = []; 
-    let step = 10;
-    for (let i = 0; i < members.length; i++) {
-        buf.push(members[i]);
-        if (buf.length === step) {
-            selectedMembers.push([...buf]);
-            buf = [];
-        }
-    }
-    if (buf.length > 0) {
-        selectedMembers.push([...buf]);
-    }
-    console.log(selectedMembers.length);
-
-    let fullNamesArray: string[] = [];
-    for(let i = 0; i < selectedMembers.length; i++) {
-        let info: any[] = await getMemberInfoBatch(selectedMembers[i]);
-        for(let i = 0; i < info.length; i++) {
-            fullNamesArray.push(info[i]['200'].fullName);
-        }
-    }
-    // Two dimensional list with id and fullname
-    console.log([members, fullNamesArray]);
-    res.end(JSON.stringify(fullNamesArray));
-});
-
-app.listen(port, () => {
-    console.log('Listening on port: ' + port);
-});
-
-
 // Trello board id
 let boardId = '5f622509e65281827b2e2e59'
-
 
 function getBoard(): any {
     return new Promise((resolve, reject) => {
@@ -215,3 +160,15 @@ async function getList(): Promise<string[]> {
     });
 
 }
+
+// IIFE = Immediately invoked function expression
+(async () => {
+    // Trello card id where the result should be written
+    let cardId = '612bf2f72bddfb5b332069ab';
+
+    let list = await getList();
+    let resultString = list.join('\n').toString();
+    resultString = resultString.replace(/\,/g, ' ');
+    await updateCard(cardId, resultString);
+    console.log(resultString);
+})();
