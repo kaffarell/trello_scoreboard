@@ -167,8 +167,10 @@ async function getList(): Promise<string[]> {
     let cardId = '612bf2f72bddfb5b332069ab';
 
     let list = await getList();
-    let resultString = list.join('\n').toString();
-    resultString = resultString.replace(/\,/g, ' ');
+    let resultStringArray: string[] = list.map((e) => {
+        return e[1] + "  " + e[0];
+    });
+    let resultString: string = resultStringArray.join('\n');
     await updateCard(cardId, resultString);
     console.log(resultString);
 })();
